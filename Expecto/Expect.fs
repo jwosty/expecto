@@ -43,6 +43,10 @@ type ExpectOverloads =
         (Accuracy.areCloseLhs actual expected)
         actual expected
 
+  static member CheckIsNaN (actual: float<'u>) = Double.IsNaN (float actual)
+
+  static member CheckIsNaN (actual: float32<'u>) = Single.IsNaN (float32 actual)
+
 let private isNull' value = isNull value
 
 let private firstDiff s1 s2 =
@@ -349,22 +353,17 @@ let floatGreaterThanOrClose accuracy (actual: float<'u>) expected message =
 let float32GreaterThanOrClose accuracy (actual: float32<'u>) expected message =
     greaterThanOrClose accuracy actual expected message
 
-/// Expect the passed float to not be a number.
-let isNaN (f: float<'u>) message =
-  if not (Double.IsNaN (float f)) then failtestf "%s. Float should be a NaN (not a number) value." message
+let inline private checkIsNaN actual =
+  let _lemma: 'M->_ = id<ExpectOverloads>
+  ((^M or ^a) : (static member CheckIsNaN : 'a -> bool) actual)
 
 /// Expect the passed float to not be a number.
-let isNaNf (f: float32<'u>) message =
-  if not (Single.IsNaN (float32 f)) then failtestf "%s. Float should be a NaN (not a number) value." message
+let inline isNaN actual message =
+  if not (checkIsNaN actual) then failtestf "%s. Value should be a NaN (not a number) value." message
 
 /// Expect the passed float to be a number.
-let isNotNaN (f: float<'u>) message =
-  if Double.IsNaN (float f) then failtestf "%s. Float was the NaN (not a number) value." message
-
-/// Expect the passed float to be a number.
-let isNotNaNf (f: float32<'u>) message =
-  if Single.IsNaN (float32 f) then failtestf "%s. Float was the NaN (not a number) value." message
-
+let inline isNotNaN actual message =
+  if checkIsNaN actual then failtestf "%s. Float was the NaN (not a number) value." message
 
 /// Expect the passed float not to be positive infinity.
 let isPositiveInfinity (actual: float<'u>) message =

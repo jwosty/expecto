@@ -1052,9 +1052,9 @@ let expecto =
         testList "float32" [
           testList "nan testing" [
             testCase "is not 'NaN'" <| fun _ ->
-              Expect.isNotNaNf 4.0f "should pass because it's not 'NaNf'"
+              Expect.isNotNaN 4.0f "should pass because it's not 'NaNf'"
             testCase "is 'NaN'" (fun _ ->
-              Expect.isNotNaNf Single.NaN "should fail because it's 'NaNf'"
+              Expect.isNotNaN Single.NaN "should fail because it's 'NaNf'"
              ) |> assertTestFails
           ]
 
@@ -1090,9 +1090,9 @@ let expecto =
         testList "float32<m>" [
           testList "nan testing" [
             testCase "is not 'NaN'" <| fun _ ->
-              Expect.isNotNaNf 4.0f<m> "should pass because it's not 'NaNf'"
+              Expect.isNotNaN 4.0f<m> "should pass because it's not 'NaNf'"
             testCase "is 'NaN'" (fun _ ->
-              Expect.isNotNaNf (Float32WithMeasure<m> Single.NaN) "should fail because it's 'NaNf'"
+              Expect.isNotNaN (Float32WithMeasure<m> Single.NaN) "should fail because it's 'NaNf'"
              ) |> assertTestFails
           ]
 

@@ -96,7 +96,7 @@ let inline float32GreaterThanOrClose message accuracy expected actual = Expecto.
 let inline isNotNaN message f = Expecto.Expect.isNotNaN f message
 
 /// Expect the passed float to be a number.
-let inline isNotNaNf message f = Expecto.Expect.isNotNaNf f message
+let inline isNotNaNf message f = Expecto.Expect.isNotNaN f message
 
 /// Expect the passed float not to be positive infinity.
 let inline isNotPositiveInfinity message f = Expecto.Expect.isNotPositiveInfinity f message
