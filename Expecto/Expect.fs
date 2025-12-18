@@ -51,9 +51,9 @@ module GenericMath =
 [<Sealed; AbstractClass>]
 type ExpectOverloads =
   static member Close (accuracy: Accuracy<'u>, actual: float<'u>, expected: float<'u>, message: string) : unit =
-    if Double.IsInfinity (float actual) then
+    if GenericMath.isInfinity actual then
       failtestf "%s. Expected actual to not be infinity, but it was." message
-    elif Double.IsInfinity (float expected) then
+    elif GenericMath.isInfinity expected then
       failtestf "%s. Expected expected to not be infinity, but it was." message
     elif Accuracy.areClose accuracy actual expected |> not then
       failtestf
@@ -64,9 +64,9 @@ type ExpectOverloads =
         actual expected
 
   static member Close (accuracy: Accuracy32<'u>, actual: float32<'u>, expected: float32<'u>, message) =
-    if Single.IsInfinity (float32 actual) then
+    if GenericMath.isInfinity actual then
       failtestf "%s. Expected actual to not be infinity, but it was." message
-    elif Single.IsInfinity (float32 expected) then
+    elif GenericMath.isInfinity expected then
       failtestf "%s. Expected expected to not be infinity, but it was." message
     elif Accuracy.areClose accuracy actual expected |> not then
       failtestf
