@@ -1,5 +1,7 @@
 module Expecto.Flip.Expect
 
+open System
+
 /// Expects f to throw an exception.
 let inline throws message f = Expecto.Expect.throws f message
 
@@ -67,6 +69,10 @@ let inline isGreaterThan message (a, b) = Expecto.Expect.isGreaterThan a b messa
 
 /// Expects `a` >= `b`.
 let inline isGreaterThanOrEqual message (a, b) = Expecto.Expect.isGreaterThanOrEqual a b message
+
+
+/// Expects `actual` and `expected` to be within a given `accuracy`.
+let inline close message expected actual = Expecto.Expect.close message expected actual
 
 /// Expects `actual` and `expected` (that are both floats) to be within a
 /// given `accuracy`.
