@@ -21,33 +21,31 @@ module GenericMath =
   [<EditorBrowsable(EditorBrowsableState.Never)>]
   [<Sealed; AbstractClass>]
   type GenericMath =
-    static member CheckIsNaN (actual: float<'u>) = Double.IsNaN (float actual)
-    static member CheckIsNaN (actual: float32<'u>) = Single.IsNaN (float32 actual)
+    static member IsNaN (actual: float<'u>) = Double.IsNaN (float actual)
+    static member IsNaN (actual: float32<'u>) = Single.IsNaN (float32 actual)
 
-    static member CheckIsPositiveInfinity (actual: float<'u>) = Double.IsPositiveInfinity (float actual)
-    static member CheckIsPositiveInfinity (actual: float32<'u>) = Single.IsPositiveInfinity (float32 actual)
-    static member CheckIsNegativeInfinity (actual: float<'u>) = Double.IsNegativeInfinity (float actual)
-    static member CheckIsNegativeInfinity (actual: float32<'u>) = Single.IsNegativeInfinity (float32 actual)
-    static member CheckIsInfinity (actual: float<'u>) = Double.IsInfinity (float actual)
-    static member CheckIsInfinity (actual: float32<'u>) = Single.IsInfinity (float32 actual)
+    static member IsPositiveInfinity (actual: float<'u>) = Double.IsPositiveInfinity (float actual)
+    static member IsPositiveInfinity (actual: float32<'u>) = Single.IsPositiveInfinity (float32 actual)
+    static member IsNegativeInfinity (actual: float<'u>) = Double.IsNegativeInfinity (float actual)
+    static member IsNegativeInfinity (actual: float32<'u>) = Single.IsNegativeInfinity (float32 actual)
+    static member IsInfinity (actual: float<'u>) = Double.IsInfinity (float actual)
+    static member IsInfinity (actual: float32<'u>) = Single.IsInfinity (float32 actual)
 
-  let inline internal checkIsNaN actual =
+  let inline internal isNaN x =
     let _lemma: 'M->_ = id<GenericMath>
-    ((^M or ^a) : (static member CheckIsNaN : 'a -> bool) actual)
+    ((^M or ^a) : (static member IsNaN : 'a -> bool) x)
 
-  let inline internal checkIsPositiveInfinity actual =
+  let inline internal isPositiveInfinity x =
     let _lemma: 'M->_ = id<GenericMath>
-    ((^M or ^a) : (static member CheckIsPositiveInfinity : 'a -> bool) actual)
+    ((^M or ^a) : (static member IsPositiveInfinity : 'a -> bool) x)
 
-  let inline internal checkIsNegativeInfinity actual =
+  let inline internal isNegativeInfinity x =
     let _lemma: 'M->_ = id<GenericMath>
-    ((^M or ^a) : (static member CheckIsNegativeInfinity : 'a -> bool) actual)
+    ((^M or ^a) : (static member IsNegativeInfinity : 'a -> bool) x)
 
-  let inline internal checkIsInfinity actual =
+  let inline internal isInfinity x =
     let _lemma: 'M->_ = id<GenericMath>
-    ((^M or ^a) : (static member CheckIsInfinity : 'a -> bool) actual)
-
-open GenericMath
+    ((^M or ^a) : (static member IsInfinity : 'a -> bool) x)
 
 [<EditorBrowsable(EditorBrowsableState.Never)>]
 [<Sealed; AbstractClass>]
@@ -383,31 +381,31 @@ let float32GreaterThanOrClose accuracy (actual: float32<'u>) expected message =
 
 /// Expect the passed value to not be a number.
 let inline isNaN actual message =
-  if not (checkIsNaN actual) then failtestf "%s. Value should be a NaN (not a number) value." message
+  if not (GenericMath.isNaN actual) then failtestf "%s. Value should be a NaN (not a number) value." message
 
 /// Expect the passed value to be a number.
 let inline isNotNaN actual message =
-  if checkIsNaN actual then failtestf "%s. Value was the NaN (not a number) value." message
+  if GenericMath.isNaN actual then failtestf "%s. Value was the NaN (not a number) value." message
 
 /// Expect the passed value not to be positive infinity.
 let inline isPositiveInfinity actual message =
-  if not (checkIsPositiveInfinity actual) then failtestf "%s. Value should be positive infinity." message
+  if not (GenericMath.isPositiveInfinity actual) then failtestf "%s. Value should be positive infinity." message
 
 /// Expect the passed value not to be negative infinity.
 let inline isNegativeInfinity actual message =
-  if not (checkIsNegativeInfinity actual) then failtestf "%s. Value should be negative infinity." message
+  if not (GenericMath.isNegativeInfinity actual) then failtestf "%s. Value should be negative infinity." message
 
 /// Expect the passed value not to be infinity.
 let inline isInfinity actual message =
-  if not (checkIsInfinity actual) then failtestf "%s. Value should be infinity." message
+  if not (GenericMath.isInfinity actual) then failtestf "%s. Value should be infinity." message
 
 /// Expect the passed float not to be positive infinity.
 let inline isNotPositiveInfinity actual message =
-  if checkIsPositiveInfinity actual then failtestf "%s. Value was positive infinity." message
+  if GenericMath.isPositiveInfinity actual then failtestf "%s. Value was positive infinity." message
 
 /// Expect the passed float not to be negative infinity.
 let inline isNotNegativeInfinity actual message =
-  if checkIsNegativeInfinity actual then failtestf "%s. Value was negative infinity." message
+  if GenericMath.isNegativeInfinity actual then failtestf "%s. Value was negative infinity." message
 
 /// Expect the passed float not to be infinity.
 let inline isNotInfinity actual message =
