@@ -14,6 +14,41 @@ open Expecto.Logging.Message
 open Microsoft.FSharp.Reflection
 open System.Reflection
 
+// [FS0064] This construct causes code to be less generic than indicated by the type annotations. The type variable 'T
+// has been constrained to be type 'GenericMath'.
+#nowarn "64"
+module GenericMath =
+  [<EditorBrowsable(EditorBrowsableState.Never)>]
+  [<Sealed; AbstractClass>]
+  type GenericMath =
+    static member CheckIsNaN (actual: float<'u>) = Double.IsNaN (float actual)
+    static member CheckIsNaN (actual: float32<'u>) = Single.IsNaN (float32 actual)
+
+    static member CheckIsPositiveInfinity (actual: float<'u>) = Double.IsPositiveInfinity (float actual)
+    static member CheckIsPositiveInfinity (actual: float32<'u>) = Single.IsPositiveInfinity (float32 actual)
+    static member CheckIsNegativeInfinity (actual: float<'u>) = Double.IsNegativeInfinity (float actual)
+    static member CheckIsNegativeInfinity (actual: float32<'u>) = Single.IsNegativeInfinity (float32 actual)
+    static member CheckIsInfinity (actual: float<'u>) = Double.IsInfinity (float actual)
+    static member CheckIsInfinity (actual: float32<'u>) = Single.IsInfinity (float32 actual)
+
+  let inline internal checkIsNaN actual =
+    let _lemma: 'M->_ = id<GenericMath>
+    ((^M or ^a) : (static member CheckIsNaN : 'a -> bool) actual)
+
+  let inline internal checkIsPositiveInfinity actual =
+    let _lemma: 'M->_ = id<GenericMath>
+    ((^M or ^a) : (static member CheckIsPositiveInfinity : 'a -> bool) actual)
+
+  let inline internal checkIsNegativeInfinity actual =
+    let _lemma: 'M->_ = id<GenericMath>
+    ((^M or ^a) : (static member CheckIsNegativeInfinity : 'a -> bool) actual)
+
+  let inline internal checkIsInfinity actual =
+    let _lemma: 'M->_ = id<GenericMath>
+    ((^M or ^a) : (static member CheckIsInfinity : 'a -> bool) actual)
+
+open GenericMath
+
 [<EditorBrowsable(EditorBrowsableState.Never)>]
 [<Sealed; AbstractClass>]
 type ExpectOverloads =
@@ -42,17 +77,6 @@ type ExpectOverloads =
         accuracy.absolute accuracy.relative
         (Accuracy.areCloseLhs actual expected)
         actual expected
-
-  static member CheckIsNaN (actual: float<'u>) = Double.IsNaN (float actual)
-  static member CheckIsNaN (actual: float32<'u>) = Single.IsNaN (float32 actual)
-
-  static member CheckIsPositiveInfinity (actual: float<'u>) = Double.IsPositiveInfinity (float actual)
-  static member CheckIsPositiveInfinity (actual: float32<'u>) = Single.IsPositiveInfinity (float32 actual)
-  static member CheckIsNegativeInfinity (actual: float<'u>) = Double.IsNegativeInfinity (float actual)
-  static member CheckIsNegativeInfinity (actual: float32<'u>) = Single.IsNegativeInfinity (float32 actual)
-  static member CheckIsInfinity (actual: float<'u>) = Double.IsInfinity (float actual)
-  static member CheckIsInfinity (actual: float32<'u>) = Single.IsInfinity (float32 actual)
-
 
 let private isNull' value = isNull value
 
@@ -318,9 +342,6 @@ let floatEqual actual expected epsilon message =
       message actual expected epsilon
 
 /// Expects `actual` and `expected` to be within a given `accuracy`.
-// [FS0064] This construct causes code to be less generic than indicated by the type annotations. The type variable 'T
-// has been constrained to be type 'ExpectOperatorsImpl'.
-#nowarn "64"
 let inline close (accuracy: Accuracy<'a,'b>) (actual: 'a) (expected: 'a) (message: string) : unit =
   let _lemma: 'M->_ = id<ExpectOverloads>
   ((^M or ^a) : (static member Close : Expecto.Accuracy<'a,'b> * 'a * 'a * string -> unit)
@@ -359,22 +380,6 @@ let floatGreaterThanOrClose accuracy (actual: float<'u>) expected message =
 /// given `accuracy`.
 let float32GreaterThanOrClose accuracy (actual: float32<'u>) expected message =
     greaterThanOrClose accuracy actual expected message
-
-let inline private checkIsNaN actual =
-  let _lemma: 'M->_ = id<ExpectOverloads>
-  ((^M or ^a) : (static member CheckIsNaN : 'a -> bool) actual)
-
-let inline private checkIsPositiveInfinity actual =
-  let _lemma: 'M->_ = id<ExpectOverloads>
-  ((^M or ^a) : (static member CheckIsPositiveInfinity : 'a -> bool) actual)
-
-let inline private checkIsNegativeInfinity actual =
-  let _lemma: 'M->_ = id<ExpectOverloads>
-  ((^M or ^a) : (static member CheckIsNegativeInfinity : 'a -> bool) actual)
-
-let inline private checkIsInfinity actual =
-  let _lemma: 'M->_ = id<ExpectOverloads>
-  ((^M or ^a) : (static member CheckIsInfinity : 'a -> bool) actual)
 
 /// Expect the passed value to not be a number.
 let inline isNaN actual message =
