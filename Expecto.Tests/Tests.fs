@@ -1060,30 +1060,30 @@ let expecto =
 
           testList "positive infinity testing" [
             testCase "is not a positive infinity" <| fun _ ->
-              Expect.isNotPositiveInfinityf 4.0f "should pass because it's not positive infinity"
+              Expect.isNotPositiveInfinity 4.0f "should pass because it's not positive infinity"
             testCase "is a positive infinity" (fun _ ->
-              Expect.isNotPositiveInfinityf Single.PositiveInfinity "should fail because it's a positive infinityf"
+              Expect.isNotPositiveInfinity Single.PositiveInfinity "should fail because it's a positive Infinity"
              ) |> assertTestFails
           ]
 
           testList "negative infinity testing" [
             testCase "is not a negative infinity" <| fun _ ->
-              Expect.isNotNegativeInfinityf 4.0f "should pass because it's not a negative infinity"
+              Expect.isNotNegativeInfinity 4.0f "should pass because it's not a negative infinity"
             testCase "is a negative infinity" (fun _ ->
-              Expect.isNotNegativeInfinityf Single.NegativeInfinity "should fail because it's negative infinityf"
+              Expect.isNotNegativeInfinity Single.NegativeInfinity "should fail because it's negative Infinity"
              ) |> assertTestFails
           ]
 
           testList "infinity testing" [
             testCase "is not an infinity" <| fun _ ->
-              Expect.isNotInfinityf 4.0f "should pass because it's not an negative infinityf nor positive"
+              Expect.isNotInfinity 4.0f "should pass because it's not an negative Infinity nor positive"
 
             testCase "is a negative infinity" (fun _ ->
-              Expect.isNotInfinityf Single.NegativeInfinity "should fail because it's negative infinityf"
+              Expect.isNotInfinity Single.NegativeInfinity "should fail because it's negative Infinity"
              ) |> assertTestFails
 
             testCase "is a positive infinity" (fun _ ->
-              Expect.isNotInfinityf Single.PositiveInfinity "should fail because it's positive infinityf"
+              Expect.isNotInfinity Single.PositiveInfinity "should fail because it's positive Infinity"
              ) |> assertTestFails
           ]
         ]
@@ -1098,30 +1098,30 @@ let expecto =
 
           testList "positive infinity testing" [
             testCase "is not a positive infinity" <| fun _ ->
-              Expect.isNotPositiveInfinityf 4.0f<m> "should pass because it's not positive infinity"
+              Expect.isNotPositiveInfinity 4.0f<m> "should pass because it's not positive infinity"
             testCase "is a positive infinity" (fun _ ->
-              Expect.isNotPositiveInfinityf (Float32WithMeasure<m> Single.PositiveInfinity) "should fail because it's a positive infinityf"
+              Expect.isNotPositiveInfinity (Float32WithMeasure<m> Single.PositiveInfinity) "should fail because it's a positive Infinity"
              ) |> assertTestFails
           ]
 
           testList "negative infinity testing" [
             testCase "is not a negative infinity" <| fun _ ->
-              Expect.isNotNegativeInfinityf 4.0f<m> "should pass because it's not a negative infinity"
+              Expect.isNotNegativeInfinity 4.0f<m> "should pass because it's not a negative infinity"
             testCase "is a negative infinity" (fun _ ->
-              Expect.isNotNegativeInfinityf (Float32WithMeasure<m> Single.NegativeInfinity) "should fail because it's negative infinityf"
+              Expect.isNotNegativeInfinity (Float32WithMeasure<m> Single.NegativeInfinity) "should fail because it's negative Infinity"
              ) |> assertTestFails
           ]
 
           testList "infinity testing" [
             testCase "is not an infinity" <| fun _ ->
-              Expect.isNotInfinityf 4.0f<m> "should pass because it's not an negative infinityf nor positive"
+              Expect.isNotInfinity 4.0f<m> "should pass because it's not an negative Infinity nor positive"
 
             testCase "is a negative infinity" (fun _ ->
-              Expect.isNotInfinityf (Float32WithMeasure<m> Single.NegativeInfinity) "should fail because it's negative infinityf"
+              Expect.isNotInfinity (Float32WithMeasure<m> Single.NegativeInfinity) "should fail because it's negative Infinity"
              ) |> assertTestFails
 
             testCase "is a positive infinity" (fun _ ->
-              Expect.isNotInfinityf (Float32WithMeasure<m> Single.PositiveInfinity) "should fail because it's positive infinityf"
+              Expect.isNotInfinity (Float32WithMeasure<m> Single.PositiveInfinity) "should fail because it's positive Infinity"
              ) |> assertTestFails
           ]
         ]
@@ -1842,7 +1842,7 @@ let close =
       ) |> assertTestFails
 
       testCase "inf fails" (fun _ ->
-        Expect.float32Close Accuracy32.low infinityf 1.0f "infinityf fails"
+        Expect.float32Close Accuracy32.low infinityf 1.0f "Infinity fails"
       ) |> assertTestFails
 
       testCase "less than easy" <| fun _ ->
@@ -1888,7 +1888,7 @@ let close =
       ) |> assertTestFails
 
       testCase "inf fails" (fun _ ->
-        Expect.float32Close Accuracy32.low<m> (Float32WithMeasure<m> infinityf) 1.0f<m> "infinityf fails"
+        Expect.float32Close Accuracy32.low<m> (Float32WithMeasure<m> infinityf) 1.0f<m> "Infinity fails"
       ) |> assertTestFails
 
       testCase "less than easy" <| fun _ ->

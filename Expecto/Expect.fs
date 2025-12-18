@@ -44,8 +44,15 @@ type ExpectOverloads =
         actual expected
 
   static member CheckIsNaN (actual: float<'u>) = Double.IsNaN (float actual)
-
   static member CheckIsNaN (actual: float32<'u>) = Single.IsNaN (float32 actual)
+
+  static member CheckIsPositiveInfinity (actual: float<'u>) = Double.IsPositiveInfinity (float actual)
+  static member CheckIsPositiveInfinity (actual: float32<'u>) = Single.IsPositiveInfinity (float32 actual)
+  static member CheckIsNegativeInfinity (actual: float<'u>) = Double.IsNegativeInfinity (float actual)
+  static member CheckIsNegativeInfinity (actual: float32<'u>) = Single.IsNegativeInfinity (float32 actual)
+  static member CheckIsInfinity (actual: float<'u>) = Double.IsInfinity (float actual)
+  static member CheckIsInfinity (actual: float32<'u>) = Single.IsInfinity (float32 actual)
+
 
 let private isNull' value = isNull value
 
@@ -357,64 +364,50 @@ let inline private checkIsNaN actual =
   let _lemma: 'M->_ = id<ExpectOverloads>
   ((^M or ^a) : (static member CheckIsNaN : 'a -> bool) actual)
 
-/// Expect the passed float to not be a number.
+let inline private checkIsPositiveInfinity actual =
+  let _lemma: 'M->_ = id<ExpectOverloads>
+  ((^M or ^a) : (static member CheckIsPositiveInfinity : 'a -> bool) actual)
+
+let inline private checkIsNegativeInfinity actual =
+  let _lemma: 'M->_ = id<ExpectOverloads>
+  ((^M or ^a) : (static member CheckIsNegativeInfinity : 'a -> bool) actual)
+
+let inline private checkIsInfinity actual =
+  let _lemma: 'M->_ = id<ExpectOverloads>
+  ((^M or ^a) : (static member CheckIsInfinity : 'a -> bool) actual)
+
+/// Expect the passed value to not be a number.
 let inline isNaN actual message =
   if not (checkIsNaN actual) then failtestf "%s. Value should be a NaN (not a number) value." message
 
-/// Expect the passed float to be a number.
+/// Expect the passed value to be a number.
 let inline isNotNaN actual message =
-  if checkIsNaN actual then failtestf "%s. Float was the NaN (not a number) value." message
+  if checkIsNaN actual then failtestf "%s. Value was the NaN (not a number) value." message
+
+/// Expect the passed value not to be positive infinity.
+let inline isPositiveInfinity actual message =
+  if not (checkIsPositiveInfinity actual) then failtestf "%s. Value should be positive infinity." message
+
+/// Expect the passed value not to be negative infinity.
+let inline isNegativeInfinity actual message =
+  if not (checkIsNegativeInfinity actual) then failtestf "%s. Value should be negative infinity." message
+
+/// Expect the passed value not to be infinity.
+let inline isInfinity actual message =
+  if not (checkIsInfinity actual) then failtestf "%s. Value should be infinity." message
 
 /// Expect the passed float not to be positive infinity.
-let isPositiveInfinity (actual: float<'u>) message =
-  if not (Double.IsPositiveInfinity (float actual)) then failtestf "%s. Float should be positive infinity." message
-
-/// Expect the passed float not to be positive infinity.
-let isPositiveInfinityf (actual: float32<'u>) message =
-  if not (Single.IsPositiveInfinity (float32 actual)) then failtestf "%s. Float should be positive infinity." message
+let inline isNotPositiveInfinity actual message =
+  if checkIsPositiveInfinity actual then failtestf "%s. Value was positive infinity." message
 
 /// Expect the passed float not to be negative infinity.
-let isNegativeInfinity (actual: float<'u>) message =
-  if not (Double.IsNegativeInfinity (float actual)) then failtestf "%s. Float should be negative infinity." message
-
-/// Expect the passed float not to be negative infinity.
-let isNegativeInfinityf (actual: float32<'u>) message =
-  if not (Single.IsNegativeInfinity (float32 actual)) then failtestf "%s. Float should be negative infinity." message
+let inline isNotNegativeInfinity actual message =
+  if checkIsNegativeInfinity actual then failtestf "%s. Value was negative infinity." message
 
 /// Expect the passed float not to be infinity.
-let isInfinity (actual: float<'u>) message =
-  if not (Double.IsInfinity (float actual)) then failtestf "%s. Float should be infinity." message
-
-/// Expect the passed float not to be infinity.
-let isInfinityf (actual: float32<'u>) message =
-  if not (Single.IsInfinity (float32 actual)) then failtestf "%s. Float should be infinity." message
-
-/// Expect the passed float not to be positive infinity.
-let isNotPositiveInfinity (actual: float<'u>) message =
-  if Double.IsPositiveInfinity (float actual) then failtestf "%s. Float was positive infinity." message
-
-/// Expect the passed float not to be positive infinity.
-let isNotPositiveInfinityf (actual: float32<'u>) message =
-  if Single.IsPositiveInfinity (float32 actual) then failtestf "%s. Float was positive infinity." message
-
-/// Expect the passed float not to be negative infinity.
-let isNotNegativeInfinity (actual: float<'u>) message =
-  if Double.IsNegativeInfinity (float actual) then failtestf "%s. Float was negative infinity." message
-
-/// Expect the passed float not to be negative infinity.
-let isNotNegativeInfinityf (actual: float32<'u>) message =
-  if Single.IsNegativeInfinity (float32 actual) then failtestf "%s. Float was negative infinity." message
-
-/// Expect the passed float not to be infinity.
-let isNotInfinity actual message =
+let inline isNotInfinity actual message =
   isNotNegativeInfinity actual message
   isNotPositiveInfinity actual message
-  // passed via excluded middle
-
-/// Expect the passed float not to be infinity.
-let isNotInfinityf actual message =
-  isNotNegativeInfinityf actual message
-  isNotPositiveInfinityf actual message
   // passed via excluded middle
 
 /// Expect the passed string not to be empty.

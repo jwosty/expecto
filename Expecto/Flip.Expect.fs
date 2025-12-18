@@ -102,19 +102,19 @@ let inline isNotNaNf message f = Expecto.Expect.isNotNaN f message
 let inline isNotPositiveInfinity message f = Expecto.Expect.isNotPositiveInfinity f message
 
 /// Expect the passed float not to be positive infinity.
-let inline isNotPositiveInfinityf message f = Expecto.Expect.isNotPositiveInfinityf f message
+let inline isNotPositiveInfinityf message f = Expecto.Expect.isNotPositiveInfinity f message
 
 /// Expect the passed float not to be negative infinity.
 let inline isNotNegativeInfinity message f = Expecto.Expect.isNotNegativeInfinity f message
 
 /// Expect the passed float not to be negative infinity.
-let inline isNotNegativeInfinityf message f = Expecto.Expect.isNotNegativeInfinityf f message
+let inline isNotNegativeInfinityf message f = Expecto.Expect.isNotNegativeInfinity f message
 
 /// Expect the passed float not to be infinity.
 let inline isNotInfinity message f = Expecto.Expect.isNotInfinity f message
 
 /// Expect the passed float not to be infinity.
-let inline isNotInfinityf message f = Expecto.Expect.isNotInfinityf f message
+let inline isNotInfinityf message f = Expecto.Expect.isNotInfinity f message
 
 /// Expect the passed string not to be empty.
 let inline isNotEmpty message actual = Expecto.Expect.isNotEmpty actual message
