@@ -1,6 +1,9 @@
 /// A module for specifying what you expect from the values generated
 /// by your tests.
 module Expecto.Expect
+
+open System.ComponentModel
+
 [<assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Expecto.BenchmarkDotNet")>]
 ()
 
@@ -10,6 +13,35 @@ open Expecto.Logging
 open Expecto.Logging.Message
 open Microsoft.FSharp.Reflection
 open System.Reflection
+
+[<EditorBrowsable(EditorBrowsableState.Never)>]
+[<Sealed; AbstractClass>]
+type ExpectOverloads =
+  static member Close (accuracy: Accuracy<'u>, actual: float<'u>, expected: float<'u>, message: string) : unit =
+    if Double.IsInfinity (float actual) then
+      failtestf "%s. Expected actual to not be infinity, but it was." message
+    elif Double.IsInfinity (float expected) then
+      failtestf "%s. Expected expected to not be infinity, but it was." message
+    elif Accuracy.areClose accuracy actual expected |> not then
+      failtestf
+        "%s. Expected difference to be less than %.20g for accuracy {absolute=%.20g; relative=%.20g}, but was %.20g. actual=%.20g expected=%.20g"
+        message (Accuracy.areCloseRhs accuracy actual expected)
+        accuracy.absolute accuracy.relative
+        (Accuracy.areCloseLhs actual expected)
+        actual expected
+
+  static member Close (accuracy: Accuracy32<'u>, actual: float32<'u>, expected: float32<'u>, message) =
+    if Single.IsInfinity (float32 actual) then
+      failtestf "%s. Expected actual to not be infinity, but it was." message
+    elif Single.IsInfinity (float32 expected) then
+      failtestf "%s. Expected expected to not be infinity, but it was." message
+    elif Accuracy.areClose accuracy actual expected |> not then
+      failtestf
+        "%s. Expected difference to be less than %.20g for accuracy {absolute=%.20g; relative=%.20g}, but was %.20g. actual=%.20g expected=%.20g"
+        message (Accuracy.areCloseRhs accuracy actual expected)
+        accuracy.absolute accuracy.relative
+        (Accuracy.areCloseLhs actual expected)
+        actual expected
 
 let private isNull' value = isNull value
 
@@ -274,34 +306,22 @@ let floatEqual actual expected epsilon message =
     failtestf "%s. Actual value was %f but was expected to be %f within %f epsilon."
       message actual expected epsilon
 
+// [FS0064] This construct causes code to be less generic than indicated by the type annotations. The type variable 'T
+// has been constrained to be type 'ExpectOperatorsImpl'.
+#nowarn "64"
+let inline close (accuracy: Accuracy<'a,'b>) (actual: 'a) (expected: 'a) (message: string) : unit =
+  let _lemma: 'M->_ = id<ExpectOverloads>
+  ((^M or ^a) : (static member Close : Expecto.Accuracy<'a,'b> * 'a * 'a * string -> unit)
+    (accuracy, actual, expected, message))
+
 /// Expects `actual` and `expected` (that are both floats) to be within a
 /// given `accuracy`.
 let floatClose (accuracy: Accuracy<'u>) (actual: float<'u>) (expected: float<'u>) (message: string) : unit =
-  if Double.IsInfinity (float actual) then
-    failtestf "%s. Expected actual to not be infinity, but it was." message
-  elif Double.IsInfinity (float expected) then
-    failtestf "%s. Expected expected to not be infinity, but it was." message
-  elif Accuracy.areClose accuracy actual expected |> not then
-    failtestf
-      "%s. Expected difference to be less than %.20g for accuracy {absolute=%.20g; relative=%.20g}, but was %.20g. actual=%.20g expected=%.20g"
-      message (Accuracy.areCloseRhs accuracy actual expected)
-      accuracy.absolute accuracy.relative
-      (Accuracy.areCloseLhs actual expected)
-      actual expected
+  close accuracy actual expected message
 /// Expects `actual` and `expected` (that are both float32s) to be within a
 /// given `accuracy`.
 let float32Close (accuracy: Accuracy32<'u>) (actual: float32<'u>) (expected: float32<'u>) message =
-  if Single.IsInfinity (float32 actual) then
-    failtestf "%s. Expected actual to not be infinity, but it was." message
-  elif Single.IsInfinity (float32 expected) then
-    failtestf "%s. Expected expected to not be infinity, but it was." message
-  elif Accuracy.areClose accuracy actual expected |> not then
-    failtestf
-      "%s. Expected difference to be less than %.20g for accuracy {absolute=%.20g; relative=%.20g}, but was %.20g. actual=%.20g expected=%.20g"
-      message (Accuracy.areCloseRhs accuracy actual expected)
-      accuracy.absolute accuracy.relative
-      (Accuracy.areCloseLhs actual expected)
-      actual expected
+  close accuracy actual expected message
 /// Expects `actual` to be less than `expected` or to be within a
 /// given `accuracy`.
 let floatLessThanOrClose accuracy actual expected message =
