@@ -347,15 +347,15 @@ let inline close (accuracy: Accuracy<'a,'b>) (actual: 'a) (expected: 'a) (messag
 /// Expects `actual` to be less than `expected` or to be within a
 /// given `accuracy`.
 let inline lessThanOrClose accuracy actual expected message =
-    if actual>expected then close accuracy actual expected message
+  if actual>expected then close accuracy actual expected message
 /// Expects `actual` to be greater than `expected` or to be within a
 /// given `accuracy`.
 let inline greaterThanOrClose accuracy actual expected message =
-    if actual<expected then close accuracy actual expected message
+  if actual<expected then close accuracy actual expected message
 
 /// Expects `actual` and `expected` (that are both floats) to be within a
 /// given `accuracy`.
-let floatClose (accuracy: Accuracy<'u>) (actual: float<'u>) (expected: float<'u>) (message: string) : unit =
+let inline floatClose (accuracy: Accuracy<'u>) (actual: float<'u>) (expected: float<'u>) (message: string) : unit =
   close accuracy actual expected message
 /// Expects `actual` and `expected` (that are both float32s) to be within a
 /// given `accuracy`.
@@ -364,19 +364,19 @@ let float32Close (accuracy: Accuracy32<'u>) (actual: float32<'u>) (expected: flo
 /// Expects `actual` to be less than `expected` or to be within a
 /// given `accuracy`.
 let floatLessThanOrClose accuracy (actual: float<'u>) expected message =
-    lessThanOrClose accuracy actual expected message
+  lessThanOrClose accuracy actual expected message
 /// Expects `actual` to be less than `expected` or to be within a
 /// given `accuracy`.
 let float32LessThanOrClose accuracy (actual: float32<'u>) expected message =
-    lessThanOrClose accuracy actual expected message
+  lessThanOrClose accuracy actual expected message
 /// Expects `actual` to be greater than `expected` or to be within a
 /// given `accuracy`.
 let floatGreaterThanOrClose accuracy (actual: float<'u>) expected message =
-    greaterThanOrClose accuracy actual expected message
+  greaterThanOrClose accuracy actual expected message
 /// Expects `actual` to be greater than `expected` or to be within a
 /// given `accuracy`.
 let float32GreaterThanOrClose accuracy (actual: float32<'u>) expected message =
-    greaterThanOrClose accuracy actual expected message
+  greaterThanOrClose accuracy actual expected message
 
 /// Expect the passed value to not be a number.
 let inline isNaN actual message =
