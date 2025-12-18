@@ -47,34 +47,33 @@ module GenericMath =
     let _lemma: 'M->_ = id<GenericMath>
     ((^M or ^a) : (static member IsInfinity : 'a -> bool) x)
 
+let inline doSomething (x: float) fmt =
+  failtestf "Bang: %a" fmt x
+
 [<EditorBrowsable(EditorBrowsableState.Never)>]
 [<Sealed; AbstractClass>]
 type ExpectOverloads =
-  static member Close (accuracy: Accuracy<'u>, actual: float<'u>, expected: float<'u>, message: string) : unit =
+  static member inline Close (accuracy: Accuracy<'a,'b>, actual: 'a, expected: 'a, message: string, fmt: ('a -> string), fmtRel: 'b -> string) : unit =
+    let fmt = fun () -> fmt
+    let fmtRel = fun () -> fmtRel
     if GenericMath.isInfinity actual then
       failtestf "%s. Expected actual to not be infinity, but it was." message
     elif GenericMath.isInfinity expected then
       failtestf "%s. Expected expected to not be infinity, but it was." message
     elif Accuracy.areClose accuracy actual expected |> not then
       failtestf
-        "%s. Expected difference to be less than %.20g for accuracy {absolute=%.20g; relative=%.20g}, but was %.20g. actual=%.20g expected=%.20g"
-        message (Accuracy.areCloseRhs accuracy actual expected)
-        accuracy.absolute accuracy.relative
-        (Accuracy.areCloseLhs actual expected)
-        actual expected
+        "%s. Expected difference to be less than %a for accuracy {absolute=%a; relative=%a}, but was %a. actual=%a expected=%a"
+        message
+        fmt (Accuracy.areCloseRhs accuracy actual expected)
+        fmt accuracy.absolute fmtRel accuracy.relative
+        fmt (Accuracy.areCloseLhs actual expected)
+        fmt actual fmt expected
+
+  static member Close (accuracy: Accuracy<'u>, actual: float<'u>, expected: float<'u>, message: string) : unit =
+    ExpectOverloads.Close (accuracy, actual, expected, message, (fun x -> $"%.20g{x}"), (fun x -> $"%.20g{x}"))
 
   static member Close (accuracy: Accuracy32<'u>, actual: float32<'u>, expected: float32<'u>, message) =
-    if GenericMath.isInfinity actual then
-      failtestf "%s. Expected actual to not be infinity, but it was." message
-    elif GenericMath.isInfinity expected then
-      failtestf "%s. Expected expected to not be infinity, but it was." message
-    elif Accuracy.areClose accuracy actual expected |> not then
-      failtestf
-        "%s. Expected difference to be less than %.20g for accuracy {absolute=%.20g; relative=%.20g}, but was %.20g. actual=%.20g expected=%.20g"
-        message (Accuracy.areCloseRhs accuracy actual expected)
-        accuracy.absolute accuracy.relative
-        (Accuracy.areCloseLhs actual expected)
-        actual expected
+    ExpectOverloads.Close (accuracy, actual, expected, message, (fun x -> $"%.20g{x}"), (fun x -> $"%.20g{x}"))
 
 let private isNull' value = isNull value
 
